@@ -1,0 +1,82 @@
+#!/usr/bin/env perl
+#
+#
+
+use v5.14;
+use strict;
+use warnings;
+use Digest::SHA;
+use Mojo::DOM;
+use Imager;
+use IO::All;
+
+sub cut_word_from_hocr {
+    my ($hocr_file_name, $image_file_name, $output_dir) = @_;
+
+    my $hocr = {};
+
+    my $hocr_dom = Mojo::DOM->new( scalar io($hocr_file_name)->utf8->all );
+    my @capabilities = split " ", $hocr_dom->find("meta[name=ocr-capabilities]")->first->attr("content");
+    for my $capability (@capabilities) {
+        my @all_bbox;
+        $hocr_dom->find("body .${capability}")->each(
+            sub {
+                my $el = shift;
+                return if $el->children->size > 0;
+                my (undef, @bbox) = split(" ", $el->attr("title"));
+                push @all_bbox, [$el->attr("id"), @bbox];
+            }
+        );
+        $hocr->{$capability} = \@all_bbox;
+    }
+
+    my $image = Imager->new( file => $image_file_name ) or die Imager->errstr;
+    for my $c (keys %$hocr) {
+        my $bbox = $hocr->{$c};
+        for my $bbox (@$bbox) {
+            my ($id, @box) = @$bbox;
+            my $box = $image->crop( left => $box[0], top => $box[1], right => $box[2], bottom => $box[3] );
+            $box->write( file => "${output_dir}/${id}.png");
+        }
+    }
+    # $image->write( file => "/tmp/over.png" );
+}
+
+die unless @ARGV == 2;
+my ($pdf_file, $output_base) = @ARGV;
+
+die unless (-f $pdf_file and -d $output_base);
+
+my $sha = Digest::SHA->new(1);
+$sha->addfile($pdf_file);
+
+my $pdf_sha1 = $sha->hexdigest;
+
+my $output_dir = io->catdir($output_base, $pdf_sha1)->mkdir;
+
+unless ((my $done = io->catfile($output_dir, ".done_convert"))->exists) {
+    my $base_name  = $output_dir->catfile("page.png");
+    system('convert', -density => 300, $pdf_file, $base_name) == 0 or exit 1;
+
+    for my $page (<$output_dir/page-*.png>) {
+        my $page_base_dir = substr($page,0,-4);
+        my $page_name = io->file($page)->filename;
+        mkdir($page_base_dir);
+        rename $page, io->catfile($page_base_dir, "page.png");
+    }
+
+    $done->touch;
+}
+
+unless ((my $done = io->catfile($output_dir, ".done_tesseract"))->exists) {
+    system(qw(parallel tesseract {} {.} -l chi_tra hocr ::: ), <$output_dir/page-*/page.png>) == 0 or exit 1;
+    $done->touch;
+}
+
+
+unless ((my $done = io->catfile($output_dir, ".done_cutword"))->exists) {
+    for my $page_dir (<$output_dir/page-*>) {
+        cut_word_from_hocr("${page_dir}/page.html", "${page_dir}/page.png", $page_dir);
+    }
+    $done->touch;
+}
