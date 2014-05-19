@@ -22,11 +22,19 @@ my $done_convert = io->catfile($output_dir, ".done_convert");
 
 unless ($done_convert->exists) {
     system(qw(convert -density 300), $pdf_file, $base_name) == 0 or exit 1;
+
+    for my $page (<$output_dir/page-*.png>) {
+        my $page_base_dir = substr($page,0,-4);
+        my $page_name = io->file($page)->filename;
+        mkdir($page_base_dir);
+        rename $page, io->catfile($page_base_dir, "page.png");
+    }
+
     $done_convert->touch;
 }
 
 my $done_teseseract = io->catfile($output_dir, ".done_tesseract");
 unless ($done_teseseract->exists) {
-    system(qw(parallel teseract {} {.} -l chi_tra hocr ::: ), <$output_dir/page-*.png>) == 0 or exit 1;
+    system(qw(parallel tesseract {} {.} -l chi_tra hocr ::: ), <$output_dir/page-*/page.png>) == 0 or exit 1;
     io->catfile($output_dir, ".done_tesseract")->touch;
 }
