@@ -7,6 +7,7 @@ use strict;
 use warnings;
 use Digest::SHA;
 use Mojo::DOM;
+use JSON;
 use Imager;
 use IO::All;
 
@@ -24,7 +25,11 @@ sub cut_word_from_hocr {
                 my $el = shift;
                 return if $el->children->size > 0;
                 my (undef, @bbox) = split(" ", $el->attr("title"));
-                push @all_bbox, [$el->attr("id"), @bbox];
+                push @all_bbox, {
+                    id => $el->attr("id"),
+                    bbox => \@bbox,
+                    text => $el->all_text(0),
+                }
             }
         );
         $hocr->{$capability} = \@all_bbox;
@@ -33,13 +38,15 @@ sub cut_word_from_hocr {
     my $image = Imager->new( file => $image_file_name ) or die Imager->errstr;
     for my $c (keys %$hocr) {
         my $bbox = $hocr->{$c};
-        for my $bbox (@$bbox) {
-            my ($id, @box) = @$bbox;
-            my $box = $image->crop( left => $box[0], top => $box[1], right => $box[2], bottom => $box[3] );
-            $box->write( file => "${output_dir}/${id}.png");
+        for (@$bbox) {
+            my $id = $_->{id};
+            my $bbox = $_->{bbox};
+            my $box_image = $image->crop( left => $bbox->[0], top => $bbox->[1], right => $bbox->[2], bottom => $bbox->[3] );
+            $box_image->write( file => "${output_dir}/${id}.png");
         }
     }
-    # $image->write( file => "/tmp/over.png" );
+
+    return $hocr;
 }
 
 die unless @ARGV == 2;
@@ -75,8 +82,14 @@ unless ((my $done = io->catfile($output_dir, ".done_tesseract"))->exists) {
 
 
 unless ((my $done = io->catfile($output_dir, ".done_cutword"))->exists) {
+    my $bbox = {};
     for my $page_dir (<$output_dir/page-*>) {
-        cut_word_from_hocr("${page_dir}/page.html", "${page_dir}/page.png", $page_dir);
+        my ($page_name) = $page_dir =~ m{\/([^/]+?)\z};
+        $bbox->{$page_name} = cut_word_from_hocr("${page_dir}/page.html", "${page_dir}/page.png", $page_dir);
     }
+
+    io->catfile($output_dir, "cutword.json")->print( JSON->new->utf8->pretty->encode($bbox) );
+
     $done->touch;
 }
+
