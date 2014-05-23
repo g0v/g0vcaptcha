@@ -41,7 +41,7 @@ sub cut_word_from_hocr {
         for (@$bbox) {
             my $id = $_->{id};
             my $bbox = $_->{bbox};
-            my $box_image = $image->crop( left => $bbox->[0], top => $bbox->[1], right => $bbox->[2], bottom => $bbox->[3] );
+            my $box_image = $image->crop( left => $bbox->[0], top => $bbox->[1], right => $bbox->[2], bottom => $bbox->[3] ) or next;
             $box_image->write( file => "${output_dir}/${id}.png");
         }
     }
