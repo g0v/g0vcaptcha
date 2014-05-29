@@ -5,8 +5,12 @@ use Mojo::Base 'Mojolicious';
 sub startup {
   my $self = shift;
 
-  my $route = $self->routes;
+  if ($self->mode eq 'development') {
+      mkdir("/tmp/g0cr_upload");
+      $self->config( upload_dir => "/tmp/g0cr_upload" );
+  }
 
+  my $route = $self->routes;
   $route->get('/')->to('welcome#welcome');
   $route->get('/upload')->to('welcome#upload');
 
