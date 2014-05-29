@@ -1,5 +1,31 @@
 <!DOCTYPE html>
 <html>
-  <head><title><%= title %></title></head>
-  <body><%= content %></body>
+    <head>
+        <meta charset="utf-8">
+        <title><%= title %></title>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" type="text/css" media="screen" />
+    </head>
+    <body>
+        <header class="navbar navbar-static-top" role="banner">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="/" class="navbar-brand">G0cr</a>
+                </div>
+                <nav class="collapse navbar-collapse" role="navigation">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/browse">Browse</a></li>
+                        <li><a href="/upload">Upload</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://g0v.tw">g0v</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <main role="main">
+            <div class="container">
+                <%= content %>
+            </div>
+        </main>
+    </body>
 </html>
