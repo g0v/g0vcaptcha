@@ -6,4 +6,9 @@ sub welcome {
     $self->render;
 }
 
+sub upload {
+    my $self = shift;
+    $self->render;
+}
+
 1;

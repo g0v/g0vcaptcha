@@ -1,0 +1,10 @@
+% layout 'default';
+% title 'Upload';
+
+<form action="/document" role="form" enctype="multipart/form-data" method="POST">
+    <div class="form-group">
+        <input type="file" name="f">
+        <p class="help-block">PDF only</p>
+    </div>
+    <button class="btn btn-default" type="submit">Upload</button>
+</form>
