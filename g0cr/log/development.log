@@ -1,0 +1,7 @@
+[Thu May 29 21:25:09 2014] [info] Listening at "http://*:3000".
+[Thu May 29 21:25:13 2014] [debug] Your secret passphrase needs to be changed!!!
+[Thu May 29 21:25:13 2014] [debug] GET "/".
+[Thu May 29 21:25:13 2014] [debug] Routing to controller "G0cr::Example" and action "welcome".
+[Thu May 29 21:25:13 2014] [debug] Rendering template "example/welcome.html.ep".
+[Thu May 29 21:25:13 2014] [debug] Rendering template "layouts/default.html.ep".
+[Thu May 29 21:25:13 2014] [debug] 200 OK (0.015364s, 65.087/s).
