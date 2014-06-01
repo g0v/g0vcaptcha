@@ -1,5 +1,13 @@
 % layout 'default';
 % title 'Browse';
 
-XXX
-
+<ul>
+    % for my $doc ( @$documents ) {
+    <li>
+        <a href="/document/<%= $doc->{sha1} %>">
+            <%= $doc->{filename} %>
+        </a>
+        <%= $doc->{size} %>
+    </li>
+    % }
+</ul>

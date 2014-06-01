@@ -26,10 +26,8 @@ sub upload {
     print $fh encode_json($info);
     close($fh);
 
-    my $es = G0cr::ElasticSearch->new;
+    my $es = G0cr::ElasticSearch->new();
     my ($status, $res) = $es->post(
-        index => "g0cr",
-        type => "document",
         body => {
             filename => $info->{filename},
             size => $info->{size},
@@ -46,7 +44,17 @@ sub upload {
 
 sub list {
     my $self = shift;
-    $self->render;
+    my $es = G0cr::ElasticSearch->new;
+    my $res = $es->search(
+        body => {
+            query => { match_all => {} },
+            size => 25,
+        }
+    );
+
+    $self->render(
+        documents => [ map { $_->{_source} } @{$res->{hits}{hits}} ]
+    );
 }
 
 1;

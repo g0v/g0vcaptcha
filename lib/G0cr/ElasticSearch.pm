@@ -11,7 +11,11 @@ sub new {
     return $o if $o;
     my $class = shift;
     my $config = G0cr::Config->load;
-    $o = Elastijk::oo->new(%{ $config->{elasticsearch_node} });
+    $o = Elastijk::oo->new(
+        %{ $config->{elasticsearch_node} }, # host, port
+        index => "g0cr",
+        type => "document",
+    );
     bless $o, $class;
     return $o;
 }
@@ -21,6 +25,8 @@ sub create_index {
 
     return 0 if $self->exists(index => "g0cr_v0");
 
+    delete $self->{index};
+    delete $self->{type};
     $self->put(
         index => "g0cr_v0",
         body => {
@@ -58,6 +64,9 @@ sub create_index {
             }
         }
     );
+    $self->{index} = "g0cr";
+    $self->{type} = "document";
+    return $self;
 }
 
 1;

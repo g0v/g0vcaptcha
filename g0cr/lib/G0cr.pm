@@ -11,6 +11,7 @@ sub startup {
   my $route = $self->routes;
   $route->get('/')->to('welcome#welcome');
   $route->get('/upload')->to('welcome#upload');
+  $route->get('/browse')->to('document#list');
 
   my $document = $route->any("/document")->to("document#");
   $document->get("/")->to('#list');
