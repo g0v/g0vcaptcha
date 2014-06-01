@@ -8,7 +8,7 @@ sub upload {
     my $self = shift;
     my $uploaded_file = $self->req->upload('f');
 
-    my $upload_dir = $self->app->config('upload_dir');
+    my $upload_dir = $self->app->config('storage');
     my $sha1_digest = sha1_hex( $uploaded_file->slurp );
 
     my $dir = $upload_dir . "/" . $sha1_digest;
@@ -23,6 +23,8 @@ sub upload {
     open(my $fh, ">", "${dir}/info.json") or die $!;
     print $fh encode_json($info);
     close($fh);
+
+    index_
 
     $self->redirect_to(action => "list");
 }
