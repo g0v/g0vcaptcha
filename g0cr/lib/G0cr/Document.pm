@@ -4,6 +4,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use Digest::SHA1 qw(sha1_hex);
 use Mojo::JSON qw(encode_json);
 
+use G0cr::ElasticSearch;
+
 sub upload {
     my $self = shift;
     my $uploaded_file = $self->req->upload('f');
@@ -24,7 +26,20 @@ sub upload {
     print $fh encode_json($info);
     close($fh);
 
-    index_
+    my $es = G0cr::ElasticSearch->new;
+    my ($status, $res) = $es->post(
+        index => "g0cr",
+        type => "document",
+        body => {
+            filename => $info->{filename},
+            size => $info->{size},
+            sha1 => $sha1_digest,
+        }
+    );
+
+    if (substr($status,0,1) ne '2') {
+        $self->app->log->debug("status = $status. res = " . encode_json($res));
+    }
 
     $self->redirect_to(action => "list");
 }
