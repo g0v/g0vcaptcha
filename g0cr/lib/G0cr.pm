@@ -15,6 +15,7 @@ sub startup {
 
   my $document = $route->any("/document")->to("document#");
   $document->get("/")->to('#list');
+  $document->get("/:sha1")->to('#get');
   $document->post("/")->to('#upload');
 }
 

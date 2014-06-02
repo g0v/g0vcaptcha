@@ -57,4 +57,12 @@ sub list {
     );
 }
 
+sub get {
+    my $self = shift;
+    my $sha1 = $self->stash("sha1");
+    my $es = G0cr::ElasticSearch->new;
+    my $res = $es->get( id => $sha1 );
+    $self->render( document => $res->{_source} );
+}
+
 1;

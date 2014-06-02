@@ -1,0 +1,9 @@
+% layout 'default';
+% title 'Browse';
+
+%= $document->{filename}
+%= $document->{size}
+
+<pre>
+%= Mojo::JSON::encode_json($document);
+</pre>
