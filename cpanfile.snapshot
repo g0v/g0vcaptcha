@@ -1,7 +1,163 @@
 # carton snapshot format: version 1.0
 DISTRIBUTIONS
-  Mojolicious-4.99
-    pathname: S/SR/SRI/Mojolicious-4.99.tar.gz
+  Digest-SHA1-2.13
+    pathname: G/GA/GAAS/Digest-SHA1-2.13.tar.gz
+    provides:
+      Digest::SHA1 2.13
+    requirements:
+      Digest::base 1.00
+      ExtUtils::MakeMaker 0
+      perl 5.004
+  Elastijk-0.08
+    pathname: G/GU/GUGOD/Elastijk-0.08.tar.gz
+    provides:
+      Elastijk 0.08
+      Elastijk::oo undef
+    requirements:
+      CPAN::Meta 0
+      CPAN::Meta::Prereqs 0
+      ExtUtils::CBuilder 0
+      Hijk 0.09
+      JSON 2.59
+      Module::Build 0.38
+  Hijk-0.13
+    pathname: G/GU/GUGOD/Hijk-0.13.tar.gz
+    provides:
+      Hijk 0.13
+    requirements:
+      CPAN::Meta 0
+      ExtUtils::MakeMaker 6.36
+  IO-All-0.61
+    pathname: F/FR/FREW/IO-All-0.61.tar.gz
+    provides:
+      IO::All 0.61
+      IO::All::Base 0.61
+      IO::All::DBM 0.61
+      IO::All::Dir 0.61
+      IO::All::File 0.61
+      IO::All::Filesys 0.61
+      IO::All::Link 0.61
+      IO::All::MLDBM 0.61
+      IO::All::Pipe 0.61
+      IO::All::STDIO 0.61
+      IO::All::Socket 0.61
+      IO::All::String 0.61
+      IO::All::Temp 0.61
+      IO_All_Test undef
+      IO_Dumper undef
+    requirements:
+      Cwd 0
+      ExtUtils::MakeMaker 6.30
+      Scalar::Util 0
+  Imager-0.98
+    pathname: T/TO/TONYC/Imager-0.98.tar.gz
+    provides:
+      Imager 0.98
+      Imager::Color 1.011
+      Imager::Color::Float 1.005
+      Imager::Color::Table 1.003
+      Imager::CountColor 0.02
+      Imager::Expr 1.006
+      Imager::Expr::Assem 1.003
+      Imager::Expr::Infix 1.006
+      Imager::Expr::Postfix 1.006
+      Imager::ExtUtils 1.002
+      Imager::FORMATS 0.98
+      Imager::File::CUR undef
+      Imager::File::ICO 0.03
+      Imager::File::SGI 0.03
+      Imager::Fill 1.012
+      Imager::Filter::DynTest 0.02
+      Imager::Filter::Flines 0.03
+      Imager::Filter::Mandelbrot 0.03
+      Imager::Font 1.038
+      Imager::Font::BBox 1.006
+      Imager::Font::FreeType2 1.020
+      Imager::Font::Image undef
+      Imager::Font::Test 1.0001
+      Imager::Font::Truetype 1.012
+      Imager::Font::Type1 1.012
+      Imager::Font::Wrap 1.004
+      Imager::Fountain 1.007
+      Imager::IO 0.98
+      Imager::Matrix2d 1.011
+      Imager::Preprocess 1.000
+      Imager::Probe 1.003
+      Imager::Regops undef
+      Imager::Test 1.003
+      Imager::Test::OverUtf8 1.003
+      Imager::Transform 1.006
+    requirements:
+      ExtUtils::MakeMaker 0
+      Scalar::Util 1
+      Test::More 0.47
+      XSLoader 0
+  JSON-2.90
+    pathname: M/MA/MAKAMAKA/JSON-2.90.tar.gz
+    provides:
+      JSON 2.90
+      JSON::Backend::PP 2.90
+      JSON::Boolean 2.90
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
+  Module-Build-0.4205
+    pathname: L/LE/LEONT/Module-Build-0.4205.tar.gz
+    provides:
+      Module::Build 0.4205
+      Module::Build::Base 0.4205
+      Module::Build::Compat 0.4205
+      Module::Build::Config 0.4205
+      Module::Build::Cookbook 0.4205
+      Module::Build::Dumper 0.4205
+      Module::Build::ModuleInfo 0.4205
+      Module::Build::Notes 0.4205
+      Module::Build::PPMMaker 0.4205
+      Module::Build::Platform::Default 0.4205
+      Module::Build::Platform::MacOS 0.4205
+      Module::Build::Platform::Unix 0.4205
+      Module::Build::Platform::VMS 0.4205
+      Module::Build::Platform::VOS 0.4205
+      Module::Build::Platform::Windows 0.4205
+      Module::Build::Platform::aix 0.4205
+      Module::Build::Platform::cygwin 0.4205
+      Module::Build::Platform::darwin 0.4205
+      Module::Build::Platform::os2 0.4205
+      Module::Build::PodParser 0.4205
+      Module::Build::Version 0.87
+      Module::Build::YAML 1.41
+      inc::latest 0.4205
+      inc::latest::private 0.4205
+    requirements:
+      CPAN::Meta 2.110420
+      CPAN::Meta::YAML 0.003
+      Cwd 0
+      Data::Dumper 0
+      ExtUtils::CBuilder 0.27
+      ExtUtils::Install 0
+      ExtUtils::Manifest 0
+      ExtUtils::Mkbootstrap 0
+      ExtUtils::ParseXS 2.21
+      File::Basename 0
+      File::Compare 0
+      File::Copy 0
+      File::Find 0
+      File::Path 0
+      File::Spec 0.82
+      File::Temp 0.15
+      Getopt::Long 0
+      Module::Metadata 1.000002
+      Parse::CPAN::Meta 1.4401
+      Perl::OSType 1
+      Pod::Man 2.17
+      Test::Harness 3.16
+      Test::More 0.49
+      Text::Abbrev 0
+      Text::ParseWords 0
+      perl 5.006001
+      version 0.87
+  Mojolicious-5.02
+    pathname: S/SR/SRI/Mojolicious-5.02.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -64,7 +220,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Server undef
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
-      Mojolicious 4.99
+      Mojolicious 5.02
       Mojolicious::Command undef
       Mojolicious::Command::cgi undef
       Mojolicious::Command::cpanify undef
@@ -112,3 +268,65 @@ DISTRIBUTIONS
       ojo undef
     requirements:
       ExtUtils::MakeMaker 0
+      perl 5.010001
+  URI-1.60
+    pathname: G/GA/GAAS/URI-1.60.tar.gz
+    provides:
+      URI 1.60
+      URI::Escape 3.31
+      URI::Heuristic 4.20
+      URI::IRI undef
+      URI::QueryParam undef
+      URI::Split undef
+      URI::URL 5.04
+      URI::WithBase 2.20
+      URI::_foreign undef
+      URI::_generic undef
+      URI::_idna undef
+      URI::_ldap 1.12
+      URI::_login undef
+      URI::_punycode 0.04
+      URI::_query undef
+      URI::_segment undef
+      URI::_server undef
+      URI::_userpass undef
+      URI::data undef
+      URI::file 4.21
+      URI::file::Base undef
+      URI::file::FAT undef
+      URI::file::Mac undef
+      URI::file::OS2 undef
+      URI::file::QNX undef
+      URI::file::Unix undef
+      URI::file::Win32 undef
+      URI::ftp undef
+      URI::gopher undef
+      URI::http undef
+      URI::https undef
+      URI::ldap 1.12
+      URI::ldapi undef
+      URI::ldaps undef
+      URI::mailto undef
+      URI::mms undef
+      URI::news undef
+      URI::nntp undef
+      URI::pop undef
+      URI::rlogin undef
+      URI::rsync undef
+      URI::rtsp undef
+      URI::rtspu undef
+      URI::sip 0.11
+      URI::sips undef
+      URI::snews undef
+      URI::ssh undef
+      URI::telnet undef
+      URI::tn3270 undef
+      URI::urn undef
+      URI::urn::isbn undef
+      URI::urn::oid undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      MIME::Base64 2
+      Test 0
+      Test::More 0
+      perl 5.008001

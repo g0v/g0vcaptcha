@@ -4,3 +4,5 @@ requires 'Elastijk' => 0.08;
 requires 'JSON';
 requires 'IO::All';
 requires 'Imager';
+requires 'URI::Escape';
+
