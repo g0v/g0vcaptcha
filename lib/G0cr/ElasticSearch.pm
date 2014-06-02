@@ -69,4 +69,9 @@ sub create_index {
     return $self;
 }
 
+sub search_unprocessed {
+    my $self = shift;
+    return $self->search(body => {query => {constant_score => {filter => {missing => {field => "hocr_done"}}}}});
+}
+
 1;

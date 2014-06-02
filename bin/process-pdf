@@ -5,11 +5,14 @@
 use v5.14;
 use strict;
 use warnings;
-use Digest::SHA;
+
 use Mojo::DOM;
 use JSON;
 use Imager;
 use IO::All;
+
+use G0cr::Config;
+use G0cr::ElasticSearch;
 
 sub cut_word_from_hocr {
     my ($hocr_file_name, $image_file_name, $output_dir) = @_;
@@ -49,47 +52,70 @@ sub cut_word_from_hocr {
     return $hocr;
 }
 
-die unless @ARGV == 2;
-my ($pdf_file, $output_base) = @ARGV;
+sub convert_pages_to_png {
+    my $req = shift;
 
-die unless (-f $pdf_file and -d $output_base);
-
-my $sha = Digest::SHA->new(1);
-$sha->addfile($pdf_file);
-
-my $pdf_sha1 = $sha->hexdigest;
-
-my $output_dir = io->catdir($output_base, $pdf_sha1)->mkdir;
-
-unless ((my $done = io->catfile($output_dir, ".done_convert"))->exists) {
-    my $base_name  = $output_dir->catfile("page.png");
-    system('convert', -density => 300, $pdf_file, $base_name) == 0 or exit 1;
-
-    for my $page (<$output_dir/page-*.png>) {
-        my $page_base_dir = substr($page,0,-4);
-        my $page_name = io->file($page)->filename;
-        mkdir($page_base_dir);
-        rename $page, io->catfile($page_base_dir, "page.png");
+    my $pdf_file = io->catfile($req->{config}{storage}, $req->{sha1}, "source.pdf");
+    unless ($pdf_file->exists) {
+        say "pdf file does not exists: $pdf_file\n";
+        return 0;
     }
 
-    $done->touch;
+    my $output_dir = io->catdir($req->{config}{storage}, $req->{sha1}, "page")->mkdir;
+    unless ((my $done = io->catfile($output_dir, ".done_convert"))->exists) {
+        say "processing $output_dir";
+
+        my $base_name  = $output_dir->catfile("page.png");
+        system('convert', -density => 300, $pdf_file, $base_name) == 0 or exit 1;
+
+        for my $page (<$output_dir/page-*.png>) {
+            my $page_base_dir = substr($page,0,-4);
+            my $page_name = io->file($page)->filename;
+            mkdir($page_base_dir);
+            rename $page, io->catfile($page_base_dir, "page.png");
+        }
+
+        $done->touch;
+    }
 }
 
-unless ((my $done = io->catfile($output_dir, ".done_tesseract"))->exists) {
-    system(qw(parallel tesseract {} {.} -l chi_tra hocr ::: ), <$output_dir/page-*/page.png>) == 0 or exit 1;
-    $done->touch;
-}
-
-
-unless ((my $done = io->catfile($output_dir, ".done_cutword"))->exists) {
-    my $bbox = {};
-    for my $page_dir (<$output_dir/page-*>) {
-        my ($page_name) = $page_dir =~ m{\/([^/]+?)\z};
-        $bbox->{$page_name} = cut_word_from_hocr("${page_dir}/page.html", "${page_dir}/page.png", $page_dir);
+sub tesserract_pages {
+    my $req = shift;
+    my $output_dir = io->catdir($req->{config}{storage}, $req->{sha1}, "page")->mkdir;
+    unless ((my $done = io->catfile($output_dir, ".done_tesseract"))->exists) {
+        system(qw(parallel tesseract {} {.} -l chi_tra hocr ::: ), <$output_dir/page-*/page.png>) == 0 or exit 1;
+        $done->touch;
     }
 
-    io->catfile($output_dir, "cutword.json")->print( JSON->new->utf8->pretty->encode($bbox) );
+    unless ((my $done = io->catfile($output_dir, ".done_cutword"))->exists) {
+        my $bbox = {};
+        for my $page_dir (<$output_dir/page-*>) {
+            my ($page_name) = $page_dir =~ m{\/([^/]+?)\z};
+            $bbox->{$page_name} = cut_word_from_hocr("${page_dir}/page.html", "${page_dir}/page.png", $page_dir);
+        }
 
-    $done->touch;
+        io->catfile($output_dir, "cutword.json")->print( JSON->new->utf8->pretty->encode($bbox) );
+
+        $done->touch;
+    }
+
+    return 1;
 }
+
+sub main {
+    my $config = G0cr::Config->load;
+    say $config->{storage};
+    my $es = G0cr::ElasticSearch->new;
+    my $res = $es->search_unprocessed;
+    for (@{ $res->{hits}{hits} }) {
+        my $req = {
+            sha1 => $_->{_source}{sha1},
+            config => $config,
+        };
+        convert_pages_to_png( $req ) or next;
+        tesserract_pages( $req ) or next;
+    }
+}
+
+main();
 
