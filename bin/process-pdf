@@ -114,13 +114,15 @@ sub store_hocr_in_index {
 
     my @ocr_text;
     for my $page_number (keys %$hocr_pages) {
+        my $n = 0+ substr($page_number,5); # assuming it matches /\A page-\d+ \z/
+
         for my $ocr_type (keys %{ $hocr_pages->{$page_number} }) {
             for my $x (@{ $hocr_pages->{$page_number}{$ocr_type} }) {
                 push @ocr_text, {
                     text => $x->{text},
                     bbox => $x->{bbox},
                     bbox_csv => join(",",@{$x->{bbox}}),
-                    page_number => $page_number,
+                    page_number => $n,
                     hocr_type => $ocr_type,
                     hocr_id => $x->{id},
                 };
