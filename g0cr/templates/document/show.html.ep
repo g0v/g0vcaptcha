@@ -5,8 +5,12 @@
 %= $document->{size}
 
 % if ($document->{tesseract_done}) {
+<ul>
 %     for my $ocr_text (@{ $document->{tesseract_output} ||[]}) {
+<li>
 Text: <%= $ocr_text->{text} %>
 Bbox: <%= $ocr_text->{bbox_csv} %>
+</li>
 %     }
+</ul>
 % }
