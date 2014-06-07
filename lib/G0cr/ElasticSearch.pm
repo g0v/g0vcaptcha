@@ -57,7 +57,7 @@ sub create_index {
                             type => "date",
                             format => "basic_date_time_no_millis" # 20140601T220100Z
                         },
-                        tesserract_output => {
+                        tesseract_output => {
                             type => "nested",
                             _id => {
                                 path => "box_csv",
@@ -83,7 +83,7 @@ sub create_index {
 
 sub search_unprocessed {
     my $self = shift;
-    return $self->search(body => {query => {constant_score => {filter => {missing => {field => "hocr_done"}}}}});
+    return $self->search(body => {query => {constant_score => {filter => {missing => {field => "tesseract_done"}}}}});
 }
 
 1;

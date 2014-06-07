@@ -13,7 +13,7 @@ G0cr / g0vcaptcha
 ### Mac Homebrew:
 
     brew install elasticsearch
-    brew install tesserract --all-languages
+    brew install tesseract --all-languages
     brew install imagemagick
     brew install parallel
 
