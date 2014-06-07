@@ -8,6 +8,13 @@
 %= Mojo::JSON::encode_json($document);
 </pre>
 
-<pre>
-%= Mojo::JSON::encode_json($hocr_words);
-</pre>
+% for my $p (sort keys %$hocr_pages) {
+
+<h3><%= $p %></h3>
+%     for my $w (@{ $hocr_pages->{$p}{ocrx_word} }) {
+<p>
+Text: <%= $w->{text}; %>
+Bbox: <%= join(",", @{$w->{bbox}}) %>
+</p>
+%     }
+% }

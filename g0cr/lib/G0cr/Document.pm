@@ -65,18 +65,18 @@ sub show {
 
     my $storage = $self->app->config('storage');
 
-    my $hocr_words = [];
+    my $hocr_pages = [];
 
     my $f = join("/", $storage, $sha1, "page", "cutword.json");
     if (-f $f) {
         local $/ = undef;
         open my $fh, "<", $f;
         my $x = <$fh>;
-        $hocr_words = decode_json($x);
+        $hocr_pages = decode_json($x);
         close $fh;
     }
 
-    $self->render( document => $res->{_source}, hocr_words => $hocr_words );
+    $self->render( document => $res->{_source}, hocr_pages => $hocr_pages );
 }
 
 1;
