@@ -1,4 +1,5 @@
-requires 'Mojolicious' => 4.99;
+requires 'Mojolicious' => 5.01;
+requires 'Mojolicious::Plugin::RenderFile' => 0.08;
 requires 'Digest::SHA1';
 requires 'Elastijk' => 0.08;
 requires 'JSON';

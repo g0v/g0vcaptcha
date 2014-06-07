@@ -70,4 +70,14 @@ sub show {
     $self->render( document => $res->{_source} );
 }
 
+sub show_page_bbox {
+    my $self = shift;
+    my $storage = $self->app->config('storage');
+    my $sha1 = $self->stash("sha1");
+    my $page = $self->stash("page");
+    my $bbox = $self->stash("bbox");
+    my $f = join "/", $storage, $sha1, "page", $page, "${bbox}.png";
+    $self->render_file( filepath => $f, 'content_disposition' => 'inline' );
+}
+
 1;

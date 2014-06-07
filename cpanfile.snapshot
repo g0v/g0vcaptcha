@@ -269,6 +269,14 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.010001
+  Mojolicious-Plugin-RenderFile-0.08
+    pathname: K/KO/KOORCHIK/Mojolicious-Plugin-RenderFile-0.08.tar.gz
+    provides:
+      Mojolicious::Plugin::RenderFile 0.08
+    requirements:
+      ExtUtils::MakeMaker 0
+      Mojolicious 3.90
+      perl 5.01
   URI-1.60
     pathname: G/GA/GAAS/URI-1.60.tar.gz
     provides:
