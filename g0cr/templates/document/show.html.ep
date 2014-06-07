@@ -6,11 +6,10 @@
 
 % if ($document->{tesseract_done}) {
 <ul>
-%     for my $ocr_text (map { $_->[0] } sort { $a->[1] cmp $b->[1] } map {[$_, sprintf("%09d%s",$_->{page_number},$_->{ocr_id}) ]} @{ $document->{tesseract_output} ||[]}) {
+%     for my $ocr_text (map { $_->[0] } sort { $a->[1] cmp $b->[1] } map {[$_, sprintf("%09d%09d%09d%09d%09d",$_->{page_number},@{$_->{bbox}}) ]} @{ $document->{tesseract_output} ||[]}) {
 <li>
-Page: <%= $ocr_text->{page_number} %>
-<%= $ocr_text->{text} %>
-(<%= $ocr_text->{bbox_csv} %>)
+<%= $ocr_text->{text} %><br>
+page-<%= $ocr_text->{page_number} %>/<%= $ocr_text->{bbox_csv} %>.png
 </li>
 %     }
 </ul>
