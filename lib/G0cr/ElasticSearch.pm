@@ -27,6 +27,11 @@ sub create_index {
 
     delete $self->{index};
     delete $self->{type};
+
+    my $Str = { type => "string" };
+    my $Term = { type => "string", index => "not_analyzed" };
+    my $Int = { type => "long" };
+
     $self->put(
         index => "g0cr_v0",
         body => {
@@ -45,18 +50,25 @@ sub create_index {
                         path => "sha1",
                     },
                     properties => {
-                        filename => { type => "string" },
-                        size => { type => "long" },
-                        sha1 => { type => "string", index => "not_analyzed" },
-                        hocr_done => {
+                        filename => $Str,
+                        size => $Int,
+                        sha1 => $Term,
+                        tesseract_done => {
                             type => "date",
                             format => "basic_date_time_no_millis" # 20140601T220100Z
                         },
-                        hocr_word => {
+                        tesserract_output => {
                             type => "nested",
+                            _id => {
+                                path => "box_csv",
+                            },
                             properties => {
-                                bbox => { type => "string", index => "not_analyzed" },
-                                text => { type => "string" },
+                                text => $Str,
+                                bbox_csv => $Term,
+                                bbox => $Int,
+                                page_number => $Int,
+                                hocr_type => $Str,
+                                hocr_id   => $Term,
                             }
                         }
                     }

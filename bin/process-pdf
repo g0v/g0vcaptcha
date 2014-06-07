@@ -82,7 +82,7 @@ sub convert_pages_to_png {
     return 1;
 }
 
-sub tesserract_pages {
+sub tesseract_pages {
     my $req = shift;
     my $output_dir = io->catdir($req->{config}{storage}, $req->{sha1}, "page");
     $output_dir->mkdir unless $output_dir->exists;
@@ -91,8 +91,10 @@ sub tesserract_pages {
         $done->touch;
     }
 
-    unless ((my $done = io->catfile($output_dir, ".done_cutword"))->exists) {
-        my $bbox = {};
+    my $bbox = {};
+    if ((my $done = io->catfile($output_dir, ".done_cutword"))->exists) {
+        $bbox = JSON->new->utf8->decode(io->catfile($output_dir, "cutword.json")->all );
+    } else {
         for my $page_dir (<$output_dir/page-*>) {
             my ($page_name) = $page_dir =~ m{\/([^/]+?)\z};
             $bbox->{$page_name} = cut_word_from_hocr("${page_dir}/page.html", "${page_dir}/page.png", $page_dir);
@@ -103,6 +105,52 @@ sub tesserract_pages {
         $done->touch;
     }
 
+    return $bbox;
+}
+
+sub store_hocr_in_index {
+    my ($es, $sha1, $hocr_pages) = @_;
+    say "indexing $sha1";
+
+    my @ocr_text;
+    for my $page_number (keys %$hocr_pages) {
+        for my $ocr_type (keys %{ $hocr_pages->{$page_number} }) {
+            for my $x (@{ $hocr_pages->{$page_number}{$ocr_type} }) {
+                push @ocr_text, {
+                    text => $x->{text},
+                    bbox => $x->{bbox},
+                    bbox_csv => join(",",@{$x->{bbox}}),
+                    page_number => $page_number,
+                    hocr_type => $ocr_type,
+                    hocr_id => $x->{id},
+                };
+            }
+        }
+    }
+    if (@ocr_text) {
+        my ($status, $res) = $es->post(
+            index => "g0cr",
+            type => "document",
+            id => $sha1,
+            command => "_update",
+            body => {
+                doc => {
+                    tesseract_done => (sub{
+                                      my @t = gmtime(time);
+                                      $t[5] += 1900;
+                                      $t[4] += 1;
+                                      return sprintf("%4d%02d%02dT%02d%02d%02dZ",@t[5,4,3,2,1,0])
+                                  }->()),
+                    tesseract_output => \@ocr_text
+                }
+            }
+        );
+        if ($status !~ /\A2/) {
+            print Data::Dumper::Dumper([ ERROR => $res ]);
+        } else {
+            say "Update $sha1 success";
+        }
+    }
     return 1;
 }
 
@@ -113,11 +161,13 @@ sub main {
     my $res = $es->search_unprocessed;
     for (@{ $res->{hits}{hits} }) {
         my $req = {
-            sha1 => $_->{_source}{sha1},
+            sha1 => (my $sha1 = $_->{_source}{sha1}),
             config => $config,
         };
+        say $sha1;
         convert_pages_to_png( $req ) or next;
-        tesserract_pages( $req ) or next;
+        my $hocr_pages = tesseract_pages( $req ) or next;
+        store_hocr_in_index($es, $sha1, $hocr_pages);
     }
 }
 
