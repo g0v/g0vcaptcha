@@ -61,12 +61,13 @@ sub convert_pages_to_png {
         return 0;
     }
 
-    my $output_dir = io->catdir($req->{config}{storage}, $req->{sha1}, "page")->mkdir;
+    my $output_dir = io->catdir($req->{config}{storage}, $req->{sha1}, "page");
+    $output_dir->mkdir unless $output_dir->exists;
     unless ((my $done = io->catfile($output_dir, ".done_convert"))->exists) {
         say "processing $output_dir";
 
         my $base_name  = $output_dir->catfile("page.png");
-        system('convert', -density => 300, $pdf_file, $base_name) == 0 or exit 1;
+        system('convert', -density => 300, $pdf_file, $base_name) == 0 or (return 0);
 
         for my $page (<$output_dir/page-*.png>) {
             my $page_base_dir = substr($page,0,-4);
@@ -75,15 +76,18 @@ sub convert_pages_to_png {
             rename $page, io->catfile($page_base_dir, "page.png");
         }
 
-        $done->touch;
+        $done->assert->touch;
     }
+
+    return 1;
 }
 
 sub tesserract_pages {
     my $req = shift;
-    my $output_dir = io->catdir($req->{config}{storage}, $req->{sha1}, "page")->mkdir;
+    my $output_dir = io->catdir($req->{config}{storage}, $req->{sha1}, "page");
+    $output_dir->mkdir unless $output_dir->exists;
     unless ((my $done = io->catfile($output_dir, ".done_tesseract"))->exists) {
-        system(qw(parallel tesseract {} {.} -l chi_tra hocr ::: ), <$output_dir/page-*/page.png>) == 0 or exit 1;
+        system(qw(parallel tesseract {} {.} -l chi_tra hocr ::: ), <$output_dir/page-*/page.png>) == 0 or return 0;
         $done->touch;
     }
 

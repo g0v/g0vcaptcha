@@ -5,12 +5,14 @@ G0cr / g0vcaptcha
 ---
 
 * perl (>= 5.14)
+* ElasticSearch
 * tesseract
 * ImageMagick
 * GNU parallel
 
 ### Mac Homebrew:
 
+    brew install elasticsearch
     brew install tesserract --all-languages
     brew install imagemagick
     brew install parallel
@@ -31,4 +33,5 @@ Deal with CPAN dependencies
 
 Try running the mojo webapp:
 
+    elasticsearch --config=/usr/local/opt/elasticsearch/config/elasticsearch.yml -d
     carton exec morbo ./g0cr/script/g0cr

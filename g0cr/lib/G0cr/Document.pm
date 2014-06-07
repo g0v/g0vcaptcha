@@ -2,7 +2,7 @@ package G0cr::Document;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Digest::SHA1 qw(sha1_hex);
-use Mojo::JSON qw(encode_json);
+use Mojo::JSON qw(encode_json decode_json);
 
 use G0cr::ElasticSearch;
 
@@ -57,12 +57,26 @@ sub list {
     );
 }
 
-sub get {
+sub show {
     my $self = shift;
     my $sha1 = $self->stash("sha1");
     my $es = G0cr::ElasticSearch->new;
     my $res = $es->get( id => $sha1 );
-    $self->render( document => $res->{_source} );
+
+    my $storage = $self->app->config('storage');
+
+    my $hocr_words = [];
+
+    my $f = join("/", $storage, $sha1, "page", "cutword.json");
+    if (-f $f) {
+        local $/ = undef;
+        open my $fh, "<", $f;
+        my $x = <$fh>;
+        $hocr_words = decode_json($x);
+        close $fh;
+    }
+
+    $self->render( document => $res->{_source}, hocr_words => $hocr_words );
 }
 
 1;

@@ -7,3 +7,7 @@
 <pre>
 %= Mojo::JSON::encode_json($document);
 </pre>
+
+<pre>
+%= Mojo::JSON::encode_json($hocr_words);
+</pre>
