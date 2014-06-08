@@ -56,9 +56,9 @@ sub cut_word_from_hocr {
 sub convert_pages_to_png {
     my $req = shift;
 
-    my $pdf_file = io->catfile($req->{config}{storage}, $req->{sha1}, "source.pdf");
-    unless ($pdf_file->exists) {
-        say "pdf file does not exists: $pdf_file\n";
+    my $source_file = io->catfile($req->{config}{storage}, $req->{sha1}, "source.pdf");
+    unless ($source_file->exists) {
+        say "source file does not exists: $source_file\n";
         return 0;
     }
 
@@ -68,15 +68,20 @@ sub convert_pages_to_png {
         say "processing $output_dir";
 
         my $base_name  = $output_dir->catfile("page.png");
-        system('convert', -density => 300, $pdf_file, $base_name) == 0 or (return 0);
+        system('convert', -density => 300, $source_file, $base_name) == 0 or (return 0);
 
-        for my $page (<$output_dir/page-*.png>) {
+        my @pages = <$output_dir/page-*.png>;
+        if (!@pages && $base_name->exists) {
+            $base_name->rename( $output_dir->catfile("page-1.png") );
+            @pages = <$output_dir/page-*.png>;
+        }
+
+        for my $page (@pages) {
             my $page_base_dir = substr($page,0,-4);
             my $page_name = io->file($page)->filename;
             mkdir($page_base_dir);
             rename $page, io->catfile($page_base_dir, "page.png");
         }
-
         $done->assert->touch;
     }
 
