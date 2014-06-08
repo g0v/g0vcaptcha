@@ -31,7 +31,15 @@ Deal with CPAN dependencies
     cpanm --notest Carton
     carton install
 
-Try running the mojo webapp:
+Initialize ElasticSearch index.
 
     elasticsearch --config=/usr/local/opt/elasticsearch/config/elasticsearch.yml -d
+    carton exec script/prepare-elasticsearch
+
+Running the mojo webapp:
+
     carton exec morbo ./script/g0cr
+
+Running the background process webapp:
+
+    carton exec morbo ./script/process-document
