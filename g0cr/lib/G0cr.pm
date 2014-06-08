@@ -9,6 +9,10 @@ sub startup {
 
   $self->config(%{ G0cr::Config->load });
 
+  if (defined $self->config->{"mojo_secret"}) {
+      $self->secrets(delete $self->config->{"mojo_secret"});
+  }
+
   my $route = $self->routes;
   $route->get('/')->to('welcome#welcome');
   $route->get('/upload')->to('welcome#upload');
