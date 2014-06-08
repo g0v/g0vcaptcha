@@ -1,4 +1,4 @@
-package G0cr::Bbox;
+package G0cr::Slice;
 use Mojo::Base 'Mojolicious::Controller';
 
 sub get {

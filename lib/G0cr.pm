@@ -26,7 +26,7 @@ sub startup {
   $document->get("/:sha1/page/:page.png")->to('#show_page_png');
   $document->get("/:sha1/page_thumbnail/:page.png")->to('#show_page_thumbnail_png');
 
-  $route->get("/bbox/:document_sha1/:page_number/:bbox_csv")->to("bbox#get")->name("bbox");
+  $route->get("/slice/(document_sha1)-(page_number)-(bbox_csv)")->to("slice#get")->name("slice");
 }
 
 1;
