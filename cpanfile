@@ -6,4 +6,4 @@ requires 'JSON';
 requires 'IO::All';
 requires 'Imager';
 requires 'URI::Escape';
-
+requires 'List::AllUtils' => 0.08;

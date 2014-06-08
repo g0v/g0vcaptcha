@@ -1,3 +1,5 @@
+% use List::MoreUtils qw<uniq>;
+
 % layout 'default';
 % title 'Browse';
 
@@ -6,13 +8,10 @@
 %= $document->{size}
 
 % if ($document->{tesseract_done}) {
-<table cellpadding="2" border="1">
-%     for my $ocr_text (map { $_->[0] } sort { $a->[1] cmp $b->[1] } map {[$_, sprintf("%09d%09d%09d%09d%09d",$_->{page_number},@{$_->{bbox}}) ]} @{ $document->{tesseract_output} ||[]}) {
-    <tr>
-        <td><%= $ocr_text->{text} %></td>
-        <td><img src="/document/<%= $sha1 %>/page/page-<%= $ocr_text->{page_number} %>/<%= $ocr_text->{bbox_csv} %>.png" /></td>
-    </tr>
+%     my @pages = sort { $a <=> $b } uniq( map { $_->{page_number} } @{ $document->{tesseract_output} ||[]} );
+%     for my $page_number (@pages) {
+        <div style="max-width: 250px;">
+            <img style="width:100%;" src="/document/<%= $sha1 %>/page_thumbnail/page-<%= $page_number %>.png" />
+        </div>
 %     }
-</table>
-
 % }

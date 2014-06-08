@@ -90,9 +90,12 @@ sub convert_pages_to_png {
 
         for my $page (@pages) {
             my $page_base_dir = substr($page,0,-4);
-            my $page_name = io->file($page)->filename;
+            my $new_page_file = io->catfile($page_base_dir, "page.png");
             mkdir($page_base_dir);
-            rename $page, io->catfile($page_base_dir, "page.png");
+            rename $page, $new_page_file;
+
+            my $thumbnail_name = io->catfile($page_base_dir, "thumbnail.png");
+            system('convert', $new_page_file, "-resize", "250x250^", $thumbnail_name) == 0 or (return 0);
         }
         $done->assert->touch;
     }

@@ -18,6 +18,8 @@ sub startup {
   $document->get("/")->to('#list');
   $document->post("/")->to('#upload');
   $document->get("/:sha1")->to('#show');
+  $document->get("/:sha1/:page.png")->to('#show_page_png');
+  $document->get("/:sha1/page_thumbnail/:page.png")->to('#show_page_thumbnail_png');
   $document->get("/:sha1/page/:page/:bbox.png")->to('#show_page_bbox');
 }
 
