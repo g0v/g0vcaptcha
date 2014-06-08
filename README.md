@@ -34,4 +34,4 @@ Deal with CPAN dependencies
 Try running the mojo webapp:
 
     elasticsearch --config=/usr/local/opt/elasticsearch/config/elasticsearch.yml -d
-    carton exec morbo ./g0cr/script/g0cr
+    carton exec morbo ./script/g0cr
