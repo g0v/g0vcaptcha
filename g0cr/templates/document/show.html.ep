@@ -3,9 +3,11 @@
 % layout 'default';
 % title 'Browse';
 
+<p>
 %= $sha1
 %= $document->{filename}
 %= $document->{size}
+</p>
 
 % if ($document->{tesseract_done}) {
 %     my @pages = sort { $a <=> $b } uniq( map { $_->{page_number} } @{ $document->{tesseract_output} ||[]} );

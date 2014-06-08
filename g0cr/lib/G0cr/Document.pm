@@ -45,6 +45,7 @@ sub upload {
 
 sub list {
     my $self = shift;
+
     my $es = G0cr::ElasticSearch->new;
     my $res = $es->search(
         body => {
@@ -53,9 +54,7 @@ sub list {
         }
     );
 
-    $self->render(
-        documents => [ map { $_->{_source} } @{$res->{hits}{hits}} ]
-    );
+    $self->render(documents => [ map { $_->{_source} } @{$res->{hits}{hits}} ]);
 }
 
 sub show {
@@ -106,16 +105,6 @@ sub show_page_thumbnail_png {
     my $sha1 = $self->stash("sha1");
     my $page = $self->stash("page");
     my $f = join "/", $storage, $sha1, "page", $page, "thumbnail.png";
-    $self->render_file( filepath => $f );
-}
-
-sub show_page_bbox {
-    my $self = shift;
-    my $storage = $self->app->config('storage');
-    my $sha1 = $self->stash("sha1");
-    my $page = $self->stash("page");
-    my $bbox = $self->stash("bbox");
-    my $f = join "/", $storage, $sha1, "page", $page, "${bbox}.png";
     $self->render_file( filepath => $f );
 }
 

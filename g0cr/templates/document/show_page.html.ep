@@ -12,7 +12,7 @@
         % for my $word (@$words) {
         <tr>
             <td><%= $word->{text} %></td>
-            <td><img style="max-width: 600px;max-height: 80px;" src="/document/<%= $sha1 %>/page/page-<%= $word->{page_number} %>/<%= $word->{bbox_csv} %>.png" /></td>
+            <td><img src="<%= url_for('bbox', format => "png", document_sha1 => $sha1, page_number => $word->{page_number}, bbox_csv => $word->{bbox_csv} ) %>" /></td>
         </tr>
         % }
     </tbody>

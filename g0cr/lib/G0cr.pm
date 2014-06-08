@@ -25,7 +25,8 @@ sub startup {
   $document->get("/:sha1/page/:page.html")->to('#show_page');
   $document->get("/:sha1/page/:page.png")->to('#show_page_png');
   $document->get("/:sha1/page_thumbnail/:page.png")->to('#show_page_thumbnail_png');
-  $document->get("/:sha1/page/:page/:bbox.png")->to('#show_page_bbox');
+
+  $route->get("/bbox/:document_sha1/:page_number/:bbox_csv")->to("bbox#get")->name("bbox");
 }
 
 1;

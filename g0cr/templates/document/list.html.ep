@@ -7,7 +7,7 @@
         <a href="/document/<%= $doc->{sha1} %>">
             <%= $doc->{filename} %>
         </a>
-        <%= $doc->{size} %>
+        Size: <%= $doc->{size} %> bytes.
     </li>
     % }
 </ul>
