@@ -71,6 +71,26 @@ sub show {
     $self->render( document => $res->{_source} );
 }
 
+sub show_page {
+    my $self = shift;
+    my $es = G0cr::ElasticSearch->new;
+
+    my $storage = $self->app->config('storage');
+    my $sha1 = $self->stash("sha1");
+    my $page = $self->stash("page");
+
+    my $page_number = substr($page,5);
+    my $res = $es->get( id => $sha1 );
+    $self->app->log->debug("pn = $page_number");
+    my @words = grep { $_->{page_number} == $page_number } @{$res->{_source}{tesseract_output}};
+
+    my $f = join "/", $storage, $sha1, "page", $page, "thumbnail.png";
+    $self->render(
+        page_number => $page_number,
+        words => \@words
+    );
+}
+
 sub show_page_png {
     my $self = shift;
     my $storage = $self->app->config('storage');

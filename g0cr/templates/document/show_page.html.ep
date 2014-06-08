@@ -1,0 +1,19 @@
+% layout 'default';
+% title 'Page';
+
+<img src="/document/<%= $sha1 %>/page_thumbnail/page-<%= $page_number %>.png" />
+
+<table class="table-striped">
+    <thead>
+        <td>Text</td>
+        <td>Image</td>
+    </thead>
+    <tbody>
+        % for my $word (@$words) {
+        <tr>
+            <td><%= $word->{text} %></td>
+            <td><img style="max-width: 600px;max-height: 80px;" src="/document/<%= $sha1 %>/page/page-<%= $word->{page_number} %>/<%= $word->{bbox_csv} %>.png" /></td>
+        </tr>
+        % }
+    </tbody>
+</table>

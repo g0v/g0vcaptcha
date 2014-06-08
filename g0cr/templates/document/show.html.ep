@@ -10,8 +10,8 @@
 % if ($document->{tesseract_done}) {
 %     my @pages = sort { $a <=> $b } uniq( map { $_->{page_number} } @{ $document->{tesseract_output} ||[]} );
 %     for my $page_number (@pages) {
-        <div style="max-width: 250px;">
-            <img style="width:100%;" src="/document/<%= $sha1 %>/page_thumbnail/page-<%= $page_number %>.png" />
-        </div>
+        <a href="/document/<%= $sha1 %>/page/page-<%= $page_number %>.html">
+            <img src="/document/<%= $sha1 %>/page_thumbnail/page-<%= $page_number %>.png" />
+        </a>
 %     }
 % }
