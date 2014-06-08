@@ -56,11 +56,12 @@ sub cut_word_from_hocr {
 sub convert_pages_to_png {
     my $req = shift;
 
-    my $source_file = io->catfile($req->{config}{storage}, $req->{sha1}, "source.pdf");
+    my ($source_file) = io->dir($req->{config}{storage}, $req->{sha1})->glob("source.*");
     unless ($source_file->exists) {
         say "source file does not exists: $source_file\n";
         return 0;
     }
+    say "processing $source_file";
 
     my $output_dir = io->catdir($req->{config}{storage}, $req->{sha1}, "page");
     $output_dir->mkdir unless $output_dir->exists;

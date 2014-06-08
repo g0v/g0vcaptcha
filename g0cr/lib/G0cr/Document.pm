@@ -9,13 +9,14 @@ use G0cr::ElasticSearch;
 sub upload {
     my $self = shift;
     my $uploaded_file = $self->req->upload('f');
+    my $original_file_ext = (split(/\./, $uploaded_file->filename))[-1] // "unknown";
 
     my $upload_dir = $self->app->config('storage');
     my $sha1_digest = sha1_hex( $uploaded_file->slurp );
 
     my $dir = $upload_dir . "/" . $sha1_digest;
     mkdir($dir);
-    $uploaded_file->move_to( "${dir}/source.pdf" );
+    $uploaded_file->move_to( "${dir}/source.${original_file_ext}" );
 
     my $info = {
         filename => $uploaded_file->filename,
@@ -39,7 +40,7 @@ sub upload {
         $self->app->log->debug("status = $status. res = " . encode_json($res));
     }
 
-    $self->redirect_to(action => "list");
+    $self->redirect_to(action => "show", sha1 => $sha1_digest);
 }
 
 sub list {
