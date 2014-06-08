@@ -27,11 +27,22 @@ sub cut_word_from_hocr {
             sub {
                 my $el = shift;
                 return if $el->children->size > 0;
-                my (undef, @bbox) = split(" ", $el->attr("title"));
+                my $text = $el->all_text(0);
+
+                # return if $text =~ /\A\s+\z/;
+
+                my @bbox;
+                for my $attr (split(/ *\; */, $el->attr("title"))) {
+                    if ($attr =~ /\Abbox/) {
+                        (undef, @bbox) = split(/ +/, $attr);
+                    }
+                }
+                return unless @bbox;
+
                 push @all_bbox, {
                     id => $el->attr("id"),
                     bbox => \@bbox,
-                    text => $el->all_text(0),
+                    text => $text,
                 }
             }
         );
