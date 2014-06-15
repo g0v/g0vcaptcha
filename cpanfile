@@ -5,5 +5,6 @@ requires 'Elastijk' => 0.08;
 requires 'JSON';
 requires 'IO::All';
 requires 'Imager';
+requires 'Imager::File::PNG';
 requires 'URI::Escape';
 requires 'List::AllUtils' => 0.08;

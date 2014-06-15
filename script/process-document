@@ -108,7 +108,7 @@ sub tesseract_pages {
     my $output_dir = io->catdir($req->{config}{storage}, $req->{sha1}, "page");
     $output_dir->mkdir unless $output_dir->exists;
     unless ((my $done = io->catfile($output_dir, ".done_tesseract"))->exists) {
-        system(qw(parallel tesseract {} {.} -l chi_tra hocr ::: ), <$output_dir/page-*/page.png>) == 0 or return 0;
+        system(qw(parallel --gnu tesseract {} {.} -l chi_tra hocr ::: ), <$output_dir/page-*/page.png>) == 0 or return 0;
         $done->touch;
     }
 
@@ -118,7 +118,8 @@ sub tesseract_pages {
     } else {
         for my $page_dir (<$output_dir/page-*>) {
             my ($page_name) = $page_dir =~ m{\/([^/]+?)\z};
-            $bbox->{$page_name} = cut_word_from_hocr("${page_dir}/page.html", "${page_dir}/page.png", $page_dir);
+            my $page_hocr = -f "${page_dir}/page.html" ? "${page_dir}/page.html" : "${page_dir}/page.hocr";
+            $bbox->{$page_name} = cut_word_from_hocr($page_hocr, "${page_dir}/page.png", $page_dir);
         }
 
         io->catfile($output_dir, "cutword.json")->print( JSON->new->utf8->pretty->encode($bbox) );

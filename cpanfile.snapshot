@@ -92,6 +92,14 @@ DISTRIBUTIONS
       Scalar::Util 1
       Test::More 0.47
       XSLoader 0
+  Imager-File-PNG-0.89
+    pathname: T/TO/TONYC/Imager-File-PNG-0.89.tar.gz
+    provides:
+      Imager::File::PNG 0.89
+    requirements:
+      ExtUtils::MakeMaker 0
+      Imager 0.90
+      XSLoader 0
   JSON-2.90
     pathname: M/MA/MAKAMAKA/JSON-2.90.tar.gz
     provides:
