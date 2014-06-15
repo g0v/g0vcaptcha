@@ -68,8 +68,8 @@ sub convert_pages_to_png {
     my $req = shift;
 
     my ($source_file) = io->dir($req->{config}{storage}, $req->{sha1})->glob("source.*");
-    unless ($source_file->exists) {
-        say "source file does not exists: $source_file\n";
+    unless ($source_file && $source_file->exists) {
+        say "source file does not exists: $req->{sha1} => $source_file\n";
         return 0;
     }
     say "processing $source_file";
@@ -84,7 +84,7 @@ sub convert_pages_to_png {
 
         my @pages = <$output_dir/page-*.png>;
         if (!@pages && $base_name->exists) {
-            $base_name->rename( $output_dir->catfile("page-1.png") );
+            $base_name->rename( $output_dir->catfile("page-0.png") );
             @pages = <$output_dir/page-*.png>;
         }
 
