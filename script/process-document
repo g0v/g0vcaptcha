@@ -6,6 +6,13 @@ use v5.14;
 use strict;
 use warnings;
 
+use FindBin;
+BEGIN {
+    unshift @INC, "$FindBin::Bin/../../local/lib";
+    unshift @INC, "$FindBin::Bin/../../lib";
+    unshift @INC, "$FindBin::Bin/../lib";
+}
+
 use Mojo::DOM;
 use JSON;
 use Imager;
@@ -79,24 +86,23 @@ sub convert_pages_to_png {
     unless ((my $done = io->catfile($output_dir, ".done_convert"))->exists) {
         say "processing $output_dir";
 
-        my $base_name  = $output_dir->catfile("page.png");
-        system('convert', -density => 300, $source_file, $base_name) == 0 or (return 0);
+        my $pages = `identify -format %n $source_file`;
 
-        my @pages = <$output_dir/page-*.png>;
-        if (!@pages && $base_name->exists) {
-            $base_name->rename( $output_dir->catfile("page-0.png") );
-            @pages = <$output_dir/page-*.png>;
+        say "Found $pages pages in $source_file";
+
+        my @pages;
+        for my $page_number (0 .. $pages-1) {
+            say "Processing page $page_number";
+
+            my $page_dir  = $output_dir->catdir("page-${page_number}")->mkdir;
+            my $page_file = $page_dir->catfile("page.png");
+            system('convert', -density => 300, $source_file . "[$page_number]", $page_file) == 0 or (return 0);
+
+            my $thumbnail_name = $page_dir->catfile("thumbnail.png");
+
+            system('convert', $page_file, "-resize", "250x250^", $thumbnail_name) == 0 or (return 0);
         }
 
-        for my $page (@pages) {
-            my $page_base_dir = substr($page,0,-4);
-            my $new_page_file = io->catfile($page_base_dir, "page.png");
-            mkdir($page_base_dir);
-            rename $page, $new_page_file;
-
-            my $thumbnail_name = io->catfile($page_base_dir, "thumbnail.png");
-            system('convert', $new_page_file, "-resize", "250x250^", $thumbnail_name) == 0 or (return 0);
-        }
         $done->assert->touch;
     }
 
