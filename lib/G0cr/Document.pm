@@ -40,7 +40,7 @@ sub upload {
         $self->app->log->debug("status = $status. res = " . encode_json($res));
     }
 
-    $self->redirect_to(action => "show", sha1 => $sha1_digest);
+    $self->redirect_to("show_document", sha1 => $sha1_digest);
 }
 
 sub list {

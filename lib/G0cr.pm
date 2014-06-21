@@ -21,7 +21,7 @@ sub startup {
   my $document = $route->any("/document")->to("document#");
   $document->get("/")->to('#list');
   $document->post("/")->to('#upload');
-  $document->get("/:sha1")->to('#show');
+  $document->get("/:sha1")->to('#show')->name("show_document");
   $document->get("/:sha1/page/:page.html")->to('#show_page');
   $document->get("/:sha1/page/:page.png")->to('#show_page_png');
   $document->get("/:sha1/page_thumbnail/:page.png")->to('#show_page_thumbnail_png');
