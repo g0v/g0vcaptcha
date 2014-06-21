@@ -4,7 +4,7 @@
 <form action="/document" role="form" enctype="multipart/form-data" method="POST">
     <div class="form-group">
         <input type="file" name="f">
-        <p class="help-block">PDF only</p>
+        <p class="help-block">pdf, jpg, png</p>
     </div>
     <button class="btn btn-default" type="submit">Upload</button>
 </form>
