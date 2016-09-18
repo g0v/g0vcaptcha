@@ -43,3 +43,36 @@ Running the mojo webapp:
 Running the background process webapp:
 
     carton exec morbo ./script/process-document
+
+## Data Model
+
+- doc
+  - id
+  - filename
+  - created_at
+
+- page
+  - id
+  - doc_id
+  - created_at
+
+- bbox
+  - id
+  - page_id
+  - location_top
+  - location_left
+  - location_bottom
+  - location_right
+  - created_at
+
+- recognition
+  - id
+  - bbox_id
+  - created_at
+  - content
+
+- recognition_confirmation
+  - id
+  - recognition_id
+  - created_at
+
